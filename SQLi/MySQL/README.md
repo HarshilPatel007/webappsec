@@ -123,4 +123,7 @@
    - PLUGIN DIR : `@@PULGIN_DIR`
    - HOSTNAME : `@@HOSTNAME`
 
+
+## Blind MySQL SQL Injection
+
 **Note:** not completed. to be continued...
