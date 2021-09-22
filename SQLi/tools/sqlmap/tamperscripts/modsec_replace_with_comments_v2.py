@@ -5,30 +5,41 @@ Copyright (c) 2006-2021 sqlmap developers (https://sqlmap.org/)
 See the file 'LICENSE' for copying permission
 
 author : Harshil Patel (https://github.com/HarshilPatel007)
+
+__version__ : 0.2-dev
 """
 
 import re
+import random
+from lib.core.enums import DBMS
 from lib.core.enums import PRIORITY
+from lib.core.common import singleTimeWarnMessage
 
 __priority__ = PRIORITY.HIGHER
 
 
 def dependencies():
-    pass
+    singleTimeWarnMessage("this tamper script '%s' is only meant to be run against %s." % (os.path.basename(__file__).split(".")[0], DBMS.MYSQL))
 
 
 def tamper(payload, **kwargs):
     """
     Mod Security Bypass.
-    Technique : replace the word(s) with SQL comment.
+    Technique : replace the word(s) with MySQL comment.
 
     >>> tamper('SELECT')
     '/*!12345SELECT*/'
     """
 
     retVal = payload
+    
+    ri1 = random.randint(0,9)
+    ri2 = random.randint(0,9)
+    ri3 = random.randint(0,9)
+    ri4 = random.randint(0,9)
+    ri5 = random.randint(0,9)
 
     if payload:
-        retVal = re.sub(r"(?<=\W)(?P<word>[A-Za-z_]+)", r'/*!12345\1*/', payload)
+        retVal = re.sub(r"(?<=\W)(?P<word>[A-Za-z_]+)", r'/*!%s\1*/' %f"{r1}{r2}{r3}{r4}{r5}", payload)
 
     return retVal
