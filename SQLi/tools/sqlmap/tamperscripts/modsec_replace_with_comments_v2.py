@@ -9,6 +9,7 @@ author : Harshil Patel (https://github.com/HarshilPatel007)
 __version__ : 0.2-dev
 """
 
+import os
 import re
 import random
 from lib.core.enums import DBMS
@@ -40,6 +41,6 @@ def tamper(payload, **kwargs):
     ri5 = random.randint(0,9)
 
     if payload:
-        retVal = re.sub(r"(?<=\W)(?P<word>[A-Za-z_]+)", r'/*!%s\1*/' %f"{r1}{r2}{r3}{r4}{r5}", payload)
+        retVal = re.sub(r"(?<=\W)(?P<word>[A-Za-z_]+)", r'/*!%s\1*/' %f"{ri1}{ri2}{ri3}{ri4}{ri5}", payload)
 
     return retVal
