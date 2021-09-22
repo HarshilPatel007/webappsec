@@ -5,6 +5,8 @@ Copyright (c) 2006-2021 sqlmap developers (https://sqlmap.org/)
 See the file 'LICENSE' for copying permission
 
 author : Harshil Patel (https://github.com/HarshilPatel007)
+
+__version__ : 0.2-dev
 """
 
 import re
@@ -19,8 +21,7 @@ def dependencies():
 
 def tamper(payload, **kwargs):
     """
-    Mod Security Bypass.
-    Technique : replace the word(s) with SQL comment.
+    replace the string(s) with given string(s).
 
     >>> tamper('SELECT')
     '/*!12345SELECT*/'
